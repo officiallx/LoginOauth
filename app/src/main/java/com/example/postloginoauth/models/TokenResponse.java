@@ -17,6 +17,10 @@ public class TokenResponse {
     @Expose
     private String expires_in;
 
+    @SerializedName("refresh_token")
+    @Expose
+    private String refresh_token;
+
     public String getAccess_token() {
         return access_token;
     }
@@ -41,8 +45,16 @@ public class TokenResponse {
         this.expires_in = expires_in;
     }
 
+    public String getRefresh_token() {
+        return refresh_token;
+    }
+
+    public void setRefresh_token(String refresh_token) {
+        this.refresh_token = refresh_token;
+    }
+
     @Override
     public String toString() {
-        return getToken_type() + " " + getAccess_token();
+        return getToken_type() + " " + getAccess_token() + " " + getRefresh_token();
     }
 }

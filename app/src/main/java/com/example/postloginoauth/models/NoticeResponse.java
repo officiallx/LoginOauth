@@ -118,6 +118,17 @@ public class NoticeResponse {
 
     @Override
     public String toString() {
-        return getTitle() + " " + getContent();
+        return "NoticeResponse{" +
+                "id=" + id +
+                ", created=" + created +
+                ", lastModified=" + lastModified +
+                ", title='" + title + '\'' +
+                ", localDate='" + localDate + '\'' +
+                ", localEndDate=" + localEndDate +
+                ", content='" + content + '\'' +
+                ", noticeType='" + noticeType + '\'' +
+                ", status='" + status + '\'' +
+                ", _new=" + _new +
+                '}';
     }
 }

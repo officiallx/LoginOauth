@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 
 import com.example.postloginoauth.interfaces.NoticeApi;
+import com.example.postloginoauth.models.NoticeRequest;
 import com.example.postloginoauth.models.NoticeResponse;
 import com.example.postloginoauth.models.Token;
 
@@ -26,63 +27,41 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NoticeActivity extends AppCompatActivity {
 
-    Token token = new Token();
-    String access_token;
+    //Token token = new Token();
+    String bearertok = "4cd78135-12aa-4c04-8ec7-c81e45e0acfe"; //ahile ko lagi etikai haleko
+    NoticeRequest noticeRequest = new NoticeRequest(); // notice request gives us body
     TextView notice_title, notice_desc;
-
-    OkHttpClient okHttpClient = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
-        @Override
-        public okhttp3.Response intercept(Chain chain) throws IOException {
-            Request originalRequest = chain.request();
-
-            Request.Builder builder = originalRequest.newBuilder().header("Bearer",
-                    token != null ? token.toString() : access_token);
-
-            Request newRequest = builder.build();
-            return chain.proceed(newRequest);
-        }
-    }).build();
-
-    Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://13.233.254.53:8081/")
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notice_activty);
 
-        notice_title = findViewById(R.id.notice_title);
-        notice_desc = findViewById(R.id.notice_desc);
+        this.notice_title = findViewById(R.id.notice_title);
+        this.notice_desc = findViewById(R.id.notice_desc);
 
-        access_token = token.getToken();
-        fetchNotice();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://13.233.254.53:8081/v1/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
-    }
-
-    private void fetchNotice() {
-
-        final NoticeApi service = retrofit.create(NoticeApi.class);
+        NoticeApi service = retrofit.create(NoticeApi.class);
 
         Map<String, Object> data = new HashMap<>();
-        data.put("pageId", String.valueOf(1));
-        data.put("sizeId", String.valueOf(10));
+        data.put("page", String.valueOf(0));
+        data.put("size", String.valueOf(10));
 
         // simplified call to request the news with already initialized service
 
-        Call<NoticeResponse> call = service.getNotice(access_token, data);
+        Call<NoticeResponse> call = service.getNotice("Bearer "+ bearertok, data, noticeRequest );
         call.enqueue(new Callback<NoticeResponse>() {
             @Override
             public void onResponse(Call<NoticeResponse> call, Response<NoticeResponse> response) {
-                if (response.isSuccessful()) {
+
                     NoticeResponse noticeResponse = response.body();
+
                     Toast.makeText(getApplicationContext(), "Response : " + noticeResponse, Toast.LENGTH_SHORT).show();
                     Log.d("Notice", "onResponse: " + noticeResponse);
-                } else {
-                    Toast.makeText(getApplicationContext(), "Cannot get data", Toast.LENGTH_SHORT).show();
-                }
             }
 
             @Override
@@ -93,5 +72,6 @@ public class NoticeActivity extends AppCompatActivity {
 
             }
         });
+
     }
 }
