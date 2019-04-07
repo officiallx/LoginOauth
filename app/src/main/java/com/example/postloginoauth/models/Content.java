@@ -3,17 +3,19 @@ package com.example.postloginoauth.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class NoticeResponse {
+import java.math.BigInteger;
+
+public class Content {
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private BigInteger id;
     @SerializedName("created")
     @Expose
-    private Integer created;
+    private BigInteger created;
     @SerializedName("lastModified")
     @Expose
-    private Integer lastModified;
+    private BigInteger lastModified;
     @SerializedName("title")
     @Expose
     private String title;
@@ -36,27 +38,27 @@ public class NoticeResponse {
     @Expose
     private Boolean _new;
 
-    public Integer getId() {
+    public BigInteger getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(BigInteger id) {
         this.id = id;
     }
 
-    public Integer getCreated() {
+    public BigInteger getCreated() {
         return created;
     }
 
-    public void setCreated(Integer created) {
+    public void setCreated(BigInteger created) {
         this.created = created;
     }
 
-    public Integer getLastModified() {
+    public BigInteger getLastModified() {
         return lastModified;
     }
 
-    public void setLastModified(Integer lastModified) {
+    public void setLastModified(BigInteger lastModified) {
         this.lastModified = lastModified;
     }
 
@@ -118,7 +120,7 @@ public class NoticeResponse {
 
     @Override
     public String toString() {
-        return "NoticeResponse{" +
+        return "Content{" +
                 "id=" + id +
                 ", created=" + created +
                 ", lastModified=" + lastModified +

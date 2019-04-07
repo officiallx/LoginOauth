@@ -3,23 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context="com.example.postloginoauth.NoticeActivity"
     android:layout_margin="5dp"
     android:paddingLeft="10dp">
 
-    <TextView
-        android:id="@+id/notice_title"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_notice"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Hello"
-        android:textSize="18dp"/>
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/notice_desc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="This is a description"/>
+    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

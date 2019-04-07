@@ -2,23 +2,24 @@ package com.example.postloginoauth;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.example.postloginoauth.adapter.NoticeAdapter;
 import com.example.postloginoauth.interfaces.NoticeApi;
+import com.example.postloginoauth.models.Content;
+import com.example.postloginoauth.models.Notice;
 import com.example.postloginoauth.models.NoticeRequest;
-import com.example.postloginoauth.models.NoticeResponse;
-import com.example.postloginoauth.models.Token;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -28,17 +29,25 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class NoticeActivity extends AppCompatActivity {
 
     //Token token = new Token();
-    String bearertok = "4cd78135-12aa-4c04-8ec7-c81e45e0acfe"; //ahile ko lagi etikai haleko
+    String bearertok = "02acb643-c62c-4075-83c9-9a517786cf03"; //ahile ko lagi etikai haleko
     NoticeRequest noticeRequest = new NoticeRequest(); // notice request gives us body
-    TextView notice_title, notice_desc;
+    Notice notice = new Notice();
+    List<Notice> contents = new ArrayList<>();
+    RecyclerView rv_notice;
+    RecyclerView.LayoutManager layoutManager;
+    NoticeAdapter noticeAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notice_activty);
 
-        this.notice_title = findViewById(R.id.notice_title);
-        this.notice_desc = findViewById(R.id.notice_desc);
+        rv_notice = findViewById(R.id.rv_notice);
+        layoutManager = new LinearLayoutManager(this);
+        rv_notice.setLayoutManager(layoutManager);
+
+        noticeAdapter = new NoticeAdapter(contents);
+        rv_notice.setAdapter(noticeAdapter);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://13.233.254.53:8081/v1/")
@@ -48,28 +57,26 @@ public class NoticeActivity extends AppCompatActivity {
         NoticeApi service = retrofit.create(NoticeApi.class);
 
         Map<String, Object> data = new HashMap<>();
-        data.put("page", String.valueOf(0));
         data.put("size", String.valueOf(10));
+        data.put("page", String.valueOf(0));
 
         // simplified call to request the news with already initialized service
 
-        Call<NoticeResponse> call = service.getNotice("Bearer "+ bearertok, data, noticeRequest );
-        call.enqueue(new Callback<NoticeResponse>() {
+        Call<Notice> noticeCall = service.getNotice("Bearer"+bearertok,data,noticeRequest);
+        noticeCall.enqueue(new Callback<Notice>() {
             @Override
-            public void onResponse(Call<NoticeResponse> call, Response<NoticeResponse> response) {
+            public void onResponse(Call<Notice> call, Response<Notice> response) {
 
-                    NoticeResponse noticeResponse = response.body();
-
-                    Toast.makeText(getApplicationContext(), "Response : " + noticeResponse, Toast.LENGTH_SHORT).show();
-                    Log.d("Notice", "onResponse: " + noticeResponse);
+                contents = (List<Notice>) response.body();
+                noticeAdapter = new NoticeAdapter(contents);
+                rv_notice.setAdapter(noticeAdapter);
+                Log.d("notice", "onResponse: "+notice);
+                Toast.makeText(getApplicationContext(),"Notice"+notice.toString(),Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onFailure(Call<NoticeResponse> call, Throwable t) {
-
-                Log.d("Notice", "onFailure: " + t.getMessage());
-                Toast.makeText(getApplicationContext(), "Failed : " + t.getMessage(), Toast.LENGTH_SHORT).show();
-
+            public void onFailure(Call<Notice> call, Throwable t) {
+                Log.d("notice", "onFailure: "+t.getMessage());
             }
         });
 
